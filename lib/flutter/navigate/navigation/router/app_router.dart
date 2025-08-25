@@ -20,8 +20,8 @@ class AppRouteState {
 
 class AppRouteParser extends RouteInformationParser<AppRouteState> {
   @override
-  Future<AppRouteState> parseRouteInformation(RouteInformation info) async {
-    final uri = Uri.parse(info.location);
+  Future<AppRouteState> parseRouteInformation(RouteInformation routeInformation) async {
+    final uri = Uri.parse(routeInformation.location);
 
     if (uri.pathSegments.isEmpty) return AppRouteState.home();
 

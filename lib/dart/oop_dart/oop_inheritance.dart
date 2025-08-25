@@ -11,7 +11,7 @@ class Animal {
 }
 
 class Dog extends Animal {
-  Dog(String name) : super(name);
+  Dog(super.name);
 
   @override
   void describe() {
@@ -27,7 +27,7 @@ mixin Flyable {
 }
 
 class Bird extends Animal with Flyable {
-  Bird(String name) : super(name);
+  Bird(super.name);
 }
 
 void main() {

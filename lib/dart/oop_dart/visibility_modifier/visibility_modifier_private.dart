@@ -1,6 +1,6 @@
 // File: person.dart
 class Person {
-  String _name; // Private
+  final String _name; // Private
 
   Person(this._name);
 

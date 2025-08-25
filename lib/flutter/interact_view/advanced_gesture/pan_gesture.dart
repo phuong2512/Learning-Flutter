@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 void main() => runApp(MaterialApp(home: PanDemo()));
 
 class PanDemo extends StatefulWidget {
+  const PanDemo({super.key});
+
   @override
   State<PanDemo> createState() => _PanDemoState();
 }
