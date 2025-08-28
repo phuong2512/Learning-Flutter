@@ -78,9 +78,7 @@ class ListDemoScreen extends StatelessWidget {
               padding: EdgeInsets.all(10),
               children: List.generate(
                 10,
-                (index) => Container(
-                  child: Center(child: Text('Ô $index')),
-                ),
+                (index) => Center(child: Text('Ô $index')),
               ),
             ),
 
