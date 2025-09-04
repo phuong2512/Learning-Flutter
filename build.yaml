@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Quy ước chung: đổi tên tất cả field sang snake_case
+          field_rename: snake
+          # Mặc định không bao gồm field null trong JSON output
+          include_if_null: false
+          # Bật tính năng này để xử lý nested class
+          explicit_to_json: true
