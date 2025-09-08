@@ -3,108 +3,98 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomeScreen());
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const WebSocketDemo(title: 'WebSocket Demo'),
-                  ),
-                );
-              },
-              child: const Text('WebSocket Demo'),
-            ),
-          ],
-        ),
-      ),
+    return const MaterialApp(
+      home: WebSocketDemo(),
     );
   }
 }
 
 class WebSocketDemo extends StatefulWidget {
-  const WebSocketDemo({super.key, required this.title});
-
-  final String title;
+  const WebSocketDemo({super.key});
 
   @override
   State<WebSocketDemo> createState() => _WebSocketDemoState();
 }
 
 class _WebSocketDemoState extends State<WebSocketDemo> {
+  late WebSocketChannel channel;
   final TextEditingController _controller = TextEditingController();
-  final _channel = WebSocketChannel.connect(
-    Uri.parse('wss://echo.websocket.events'),
-  );
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Form(
-              child: TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(labelText: 'Send a message'),
-              ),
-            ),
-            const SizedBox(height: 24),
-            StreamBuilder(
-              stream: _channel.stream,
-              builder: (context, snapshot) {
-                return Text(
-                  snapshot.hasData ? '${snapshot.data}' : 'LOADING!!!!!!!!',
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _sendMessage,
-        tooltip: 'Send message',
-        child: const Icon(Icons.send),
-      ),
+  void initState() {
+    super.initState();
+    channel = WebSocketChannel.connect(
+      Uri.parse('wss://ws.ifelse.io'),
     );
-  }
-
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      _channel.sink.add(_controller.text);
-    }
   }
 
   @override
   void dispose() {
-    _channel.sink.close();
+    channel.sink.close();
     _controller.dispose();
-    log('dispose');
     super.dispose();
+  }
+
+  void _sendMessage() {
+    if (_controller.text.isNotEmpty) {
+      channel.sink.add(_controller.text);
+      _controller.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("WebSocket Demo")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: "Nhập tin nhắn",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text("Tin nhắn từ server:"),
+            Expanded(
+              child: StreamBuilder(
+                stream: channel.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    log(snapshot.error.toString());
+                    return Text("Lỗi: ${snapshot.error}");
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Text("Đang kết nối...");
+                  }
+                  return Text(snapshot.data?.toString() ?? "");
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

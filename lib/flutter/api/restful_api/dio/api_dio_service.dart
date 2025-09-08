@@ -4,7 +4,7 @@ import 'package:learning_flutter/flutter/api/restful_api/user.dart';
 class ApiDioService {
   final dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.1.10:3000",
+      baseUrl: "http://192.168.1.19:3000",
       headers: {
         'Content-Type': 'application/json',
         // 'User-Agent':

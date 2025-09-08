@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:learning_flutter/flutter/api/restful_api/user.dart';
 
 class ApiHttpService {
-  final String apiUrl = "http://192.168.1.10:3000/users";
+  final String apiUrl = "http://192.168.1.19:3000/users";
   final Map<String, String> headers = {
     'Content-Type': 'application/json',
     // 'User-Agent': 'FlutterApp/1.0', //Xác định thông tin ứng dụng đang sử dụng
@@ -35,8 +35,14 @@ class ApiHttpService {
       body: jsonEncode(user.toJson()),
       headers: headers,
     );
-    return User.fromJson(jsonDecode(res.body));
+
+    if (res.statusCode == 201 || res.statusCode == 200) {
+      return User.fromJson(jsonDecode(res.body));
+    } else {
+      throw Exception("Failed to create user. Response: ${res.body}");
+    }
   }
+
 
   Future<User> updateUser(String id, User user) async {
     final res = await http.put(

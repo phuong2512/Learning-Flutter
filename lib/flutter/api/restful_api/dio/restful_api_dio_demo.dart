@@ -17,6 +17,7 @@ class _RestfulApiDioDemoState extends State<RestfulApiDioDemo> {
   final ApiDioService _userService = ApiDioService();
   final TextEditingController _idController = TextEditingController();
   Future<List<User>>? _futureUserData;
+
   void _loadAllUsers() {
     setState(() {
       _futureUserData = _userService.getAlUsers();
@@ -122,7 +123,7 @@ class _RestfulApiDioDemoState extends State<RestfulApiDioDemo> {
 
   void _createNewUser() async {
     final newUser = User(
-      id: DateTime.now().second.toString(), // id unique
+      id: "",
       name: "New Dio User",
       age: 25,
       email: "dio_user@gmail.com",
@@ -149,6 +150,7 @@ class _RestfulApiDioDemoState extends State<RestfulApiDioDemo> {
     );
 
     final user = await _userService.updateUser(id, updatedUser);
+    if (!mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text("Updated: ${user.name}")));
@@ -160,6 +162,7 @@ class _RestfulApiDioDemoState extends State<RestfulApiDioDemo> {
     if (_idController.text.isEmpty) return;
     final id = _idController.text;
     final user = await _userService.patchUser(id, {"name": "Patched Dio User"});
+    if (!mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text("Patched: ${user.name}")));
@@ -171,6 +174,7 @@ class _RestfulApiDioDemoState extends State<RestfulApiDioDemo> {
     if (_idController.text.isEmpty) return;
     final id = _idController.text;
     await _userService.deleteUser(id);
+    if (!mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text("Deleted user $id")));

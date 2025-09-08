@@ -24,12 +24,16 @@ class User {
     address: json['address'],
   );
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "age": age,
-    "email": email,
-    "phone": phone,
-    "address": address,
-  };
+  Map<String, dynamic> toJson() {
+    final data = {
+      "name": name,
+      "age": age,
+      "email": email,
+      "phone": phone,
+      "address": address,
+    };
+    if (id.isNotEmpty) data["id"] = id;
+    return data;
+  }
+
 }

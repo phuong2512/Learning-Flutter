@@ -33,7 +33,7 @@ class _RestfulApiHttpDemoState extends State<RestfulApiHttpDemo> {
 
   void _createNewUser() async {
     final newUser = User(
-      id: DateTime.now().second.toString(), // id unique tạm
+      id: "", // id unique tạm
       name: "New User",
       age: 20,
       email: "newuser@gmail.com",
