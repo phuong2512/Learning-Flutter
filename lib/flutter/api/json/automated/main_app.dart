@@ -48,7 +48,7 @@ class _UserScreenState extends State<UserScreen> {
     parsedUser = User.fromJson(userMap);
 
     User newUser = User(
-      id: "159",
+      id: "150",
       name: "Phuong",
       age: 30,
       address: Address('159', 'HCM'),

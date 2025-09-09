@@ -44,7 +44,7 @@ class _AnimatedWidgetDemoState extends State<AnimatedWidgetDemo>
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           AnimatedFixSizeLogo(animation: scaleAnimation),
           AnimatedRotationLogo(animation: rotateAnimation),

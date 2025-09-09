@@ -79,7 +79,7 @@ class DetailScreen extends StatelessWidget {
       body: Center(
         child: Hero(
           createRectTween: (begin, end) {
-            return RectTween(begin: begin, end: end); // Bay thẳng
+            return MaterialRectArcTween(begin: begin, end: end); // Bay cong
           },
           tag: hero['tag']!,
           child: Image.asset(

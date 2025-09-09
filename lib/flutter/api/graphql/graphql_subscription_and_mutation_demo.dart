@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final HttpLink httpLink = HttpLink('https://hasura.io/learn/graphql');
     final String authToken =
-        'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik9FWTJSVGM1UlVOR05qSXhSRUV5TURJNFFUWXdNekZETWtReU1EQXdSVUV4UVVRM05EazFNQSJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXSwieC1oYXN1cmEtdXNlci1pZCI6ImF1dGgwfDY4YTdkZTViNGY3ZmQwY2Q4MzUwMjE1YyJ9LCJuaWNrbmFtZSI6InBodW9uZ3F2MTIiLCJuYW1lIjoicGh1b25ncXYxMkBnbWFpbC5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvMDkxMDIzYTQ5YzRjZGJiNjMwMjhhZTIyZjkzMzFlYTk_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZwaC5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyNS0wOS0wOFQwMjo1NDoyMS4zODhaIiwiaXNzIjoiaHR0cHM6Ly9ncmFwaHFsLXR1dG9yaWFscy5hdXRoMC5jb20vIiwiYXVkIjoiUDM4cW5GbzFsRkFRSnJ6a3VuLS13RXpxbGpWTkdjV1ciLCJzdWIiOiJhdXRoMHw2OGE3ZGU1YjRmN2ZkMGNkODM1MDIxNWMiLCJpYXQiOjE3NTczMDAwNjIsImV4cCI6MTc1NzMzNjA2Miwic2lkIjoiVmtkMENyZlRaUGdnN2dBODRoSmh2Rjczc2ltLTVCUTgiLCJhdF9oYXNoIjoiY3VsUzZveUNWM2JNRnNMekNURlp6QSIsIm5vbmNlIjoiTXdRWHF4UXRHR1MxbEJaNH5IdUwwVnJTOG9kTVppajkifQ.jPxWJQH9YR_rDzyBgVr0ZreEmiT-07HaM9jPIaFUwJozvsNe77TDjRMb7jPgmafMTixbbU6wwOz56eCQtjCtonKVtFUMlTBrLV6vF4PMhW9SE61nZdaCLxy78xAcStInwj3rUyVK1qTu2GIgubayXIw0-d8P8IryCB8ILGoWhZ8opKw9IzBFE13yU1j2_jQZomWWbSsOzYd2BQp0zLpoAQc30OL5B08dnij-d2NiUpZ5Rv6W3jX7uaZqJXzZz8D25ki3Xrft2WyTaH8OK-ro1iTpWMSYX4SdbOpOxAtJYA6eSg1l0c5Xa48cMIje_H1F05FNOnrj30JloCEz1wd33w';
+        'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik9FWTJSVGM1UlVOR05qSXhSRUV5TURJNFFUWXdNekZETWtReU1EQXdSVUV4UVVRM05EazFNQSJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXSwieC1oYXN1cmEtdXNlci1pZCI6ImF1dGgwfDY4YTdkZTViNGY3ZmQwY2Q4MzUwMjE1YyJ9LCJuaWNrbmFtZSI6InBodW9uZ3F2MTIiLCJuYW1lIjoicGh1b25ncXYxMkBnbWFpbC5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvMDkxMDIzYTQ5YzRjZGJiNjMwMjhhZTIyZjkzMzFlYTk_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZwaC5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyNS0wOS0wOFQwMjo1NDoyMS4zODhaIiwiaXNzIjoiaHR0cHM6Ly9ncmFwaHFsLXR1dG9yaWFscy5hdXRoMC5jb20vIiwiYXVkIjoiUDM4cW5GbzFsRkFRSnJ6a3VuLS13RXpxbGpWTkdjV1ciLCJzdWIiOiJhdXRoMHw2OGE3ZGU1YjRmN2ZkMGNkODM1MDIxNWMiLCJpYXQiOjE3NTc0MDYyODksImV4cCI6MTc1NzQ0MjI4OSwic2lkIjoiVmtkMENyZlRaUGdnN2dBODRoSmh2Rjczc2ltLTVCUTgiLCJhdF9oYXNoIjoiVTRVMURKaXRpaWR3N0VwanM1TkM5QSIsIm5vbmNlIjoiLk5GWk5CeG8wYkZDUm9IUE1WOFhSMDIuRmtCbDNEX0wifQ.MIQlzVGHXeYF_Iy3J1MbfBk-jaTIyB5ybPNvANNvm3e2AkSaePGXmQVd2bL1IOyyVT5vSlHDH9_mOrBx9jLcMRHyu7gdgCSb3aR4AVeu-6VkfmOUG1tKc4VhyxAoOSib8ofrC0LDzlPShxZ7HV_AHWwDSYA3CHZPQbtQYS04TqV4Xdcc5Bk8Z89y9CKdR2hCTrrdKJFKE5ctfzsobc4dMoprr10_N1V89IpZKD5qABPzAL1qJx4Z9jQnkl_JSZ2BDrFO7TNQgk_rQIh3ab16AxMS9YtV5i6Nl7omwPEhS241wTp-zZnWq_AhjieLseJSdy4FEq58525-cPnzZ0l4JA';
 
     final WebSocketLink webSocketLink = WebSocketLink(
       'wss://hasura.io/learn/graphql',
@@ -71,6 +71,7 @@ class GraphQLSubscriptionAndMutationDemoScreen extends StatelessWidget {
   final String mutationCreate = r'''
   mutation insertTodo($title: String!) {
     insert_todos(objects: {title: $title}) {
+      affected_rows
       returning {
         created_at
         is_completed
@@ -84,6 +85,7 @@ class GraphQLSubscriptionAndMutationDemoScreen extends StatelessWidget {
   final String mutationUpdate = r'''
   mutation updateTodo($id: Int!, $title: String!, $isCompleted: Boolean!) {
     update_todos(where: {id: {_eq: $id}}, _set: {is_completed: $isCompleted, title: $title}) {
+      affected_rows
       returning {
         id
         is_completed
@@ -95,6 +97,7 @@ class GraphQLSubscriptionAndMutationDemoScreen extends StatelessWidget {
   final String mutationDelete = r'''
   mutation deleteTodo($id: Int!) {
     delete_todos(where: {id: {_eq: $id}}) {
+      affected_rows
       returning {
         id
       }
@@ -115,12 +118,22 @@ class GraphQLSubscriptionAndMutationDemoScreen extends StatelessWidget {
               options: MutationOptions(
                 document: gql(mutationCreate),
                 onCompleted: (data) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Todo created successfully!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  final affectedRows = data?['insert_todos']?['affected_rows'] ?? 0;
+                  if (affectedRows > 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Todo created successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to create todo.'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                  }
                 },
                 onError: (error) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -186,14 +199,22 @@ class GraphQLSubscriptionAndMutationDemoScreen extends StatelessWidget {
                               options: MutationOptions(
                                 document: gql(mutationDelete),
                                 onCompleted: (data) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Todo with id ${todo['id']} delete successfully!',
+                                  final affectedRows = data?['delete_todos']?['affected_rows'] ?? 0;
+                                  if (affectedRows > 0) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Todo with id ${todo['id']} deleted!'),
+                                        backgroundColor: Colors.green,
                                       ),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Delete failed'),
+                                        backgroundColor: Colors.orange,
+                                      ),
+                                    );
+                                  }
                                 },
                                 onError: (error) {
                                   ScaffoldMessenger.of(context).showSnackBar(

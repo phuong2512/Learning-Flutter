@@ -50,7 +50,7 @@ class ListScreen extends StatelessWidget {
                   return MaterialRectCenterArcTween(begin: begin, end: end);
                 },
                 child: RadialExpansion(
-                  maxRadius: 25.0,
+                  maxRadius: 50.0,
                   child: Image.asset(_hero[index]['img']!, fit: BoxFit.cover),
                 ),
               ),
@@ -85,8 +85,8 @@ class DetailScreen extends StatelessWidget {
       appBar: AppBar(title: Text(hero['title']!)),
       body: Center(
         child: SizedBox(
-          width: 300,
-          height: 300,
+          width: 200,
+          height: 200,
           child: Hero(
             tag: hero['tag']!,
             createRectTween: (begin, end) {
