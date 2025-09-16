@@ -1,10 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/flutter/api/restful_api/http/api_http_service.dart';
-import 'package:learning_flutter/flutter/api/restful_api/user.dart';
-
-void main() {
-  runApp(MaterialApp(home: RestfulApiHttpDemo()));
-}
+import 'package:learning_flutter/flutter/api/restful_api/todo.dart';
 
 class RestfulApiHttpDemo extends StatefulWidget {
   const RestfulApiHttpDemo({super.key});
@@ -14,171 +12,133 @@ class RestfulApiHttpDemo extends StatefulWidget {
 }
 
 class _RestfulApiHttpDemoState extends State<RestfulApiHttpDemo> {
+  final ApiHttpService _apiHttpService = ApiHttpService();
   final TextEditingController _idController = TextEditingController();
+  List<Todo> todos = [];
 
-  final ApiHttpService _userService = ApiHttpService();
-  Future<List<User>>? _futureUserData;
-  void _loadAllUsers() {
+  @override
+  void initState() {
+    super.initState();
+    _loadTodos();
+  }
+
+  void _loadTodos() async {
+    final data = await _apiHttpService.getTodos();
+    setState(() => todos = data.take(10).toList());
+  }
+
+  void _getTodoById(String id) async {
+    final todo = await _apiHttpService.getTodoById(int.parse(id));
     setState(() {
-      _futureUserData = _userService.getAlUsers();
+      todos = [todo];
     });
   }
 
-  void _getUserById(String id) async {
-    final user = await _userService.getUserById(id);
-    setState(() {
-      _futureUserData = Future.value([user]);
+  void _createNewTodo() async {
+    final todo = Todo(userId: 1, todo: "New task");
+    final created = await _apiHttpService.createTodo(todo);
+    setState(() => todos.add(created));
+    log("Create New Todo with id ${created.id}");
+  }
+
+  void _updateTodo(int index) async {
+    if (todos.isEmpty) return;
+    final todo = todos[index];
+    final updated = await _apiHttpService.updateTodo(
+      Todo(
+        id: todo.id,
+        userId: todo.userId,
+        todo: "Updated task",
+        completed: true,
+      ),
+    );
+    setState(() => todos[index] = updated);
+    log("Update Todo at index $index with id ${updated.id}");
+  }
+
+  void _patchTodo(int index) async {
+    if (todos.isEmpty) return;
+    final todo = todos[index];
+    final patched = await _apiHttpService.patchTodo(todo.id!, {
+      "completed": true,
     });
+    setState(() => todos[index] = patched);
+    log("Path Todo at index $index with id ${patched.id}");
   }
 
-  void _createNewUser() async {
-    final newUser = User(
-      id: "", // id unique tạm
-      name: "New User",
-      age: 20,
-      email: "newuser@gmail.com",
-      phone: "0123456789",
-      address: {"street": "New Street", "city": "New City"},
-    );
-
-    final created = await _userService.createUser(newUser);
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Created: ${created.name}")));
-    _loadAllUsers();
+  void _deleteTodo(int index) async {
+    if (todos.isEmpty) return;
+    final todo = todos[index];
+    await _apiHttpService.deleteTodo(todo.id!);
+    setState(() => todos.removeAt(index));
+    log("Del Todo at index $index with id ${todo.id!}");
   }
 
-  void _updateUserData() async {
-    if (_idController.text.isEmpty) return;
-    final id = _idController.text;
-    final updatedUser = User(
-      id: id,
-      name: "Updated User",
-      age: 30,
-      email: "updated@gmail.com",
-      phone: "999999999",
-      address: {"street": "Updated St", "city": "Updated City"},
-    );
-
-    final user = await _userService.updateUser(id, updatedUser);
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Updated: ${user.name}")));
-    _loadAllUsers();
-  }
-
-  void _patchUserData() async {
-    if (_idController.text.isEmpty) return;
-    final id = _idController.text;
-
-    final user = await _userService.patchUser(id, {"name": "Patched User"});
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Patched: ${user.name}")));
-    _loadAllUsers();
-  }
-
-  void _deleteUserData() async {
-    if (_idController.text.isEmpty) return;
-    final id = _idController.text;
-
-    await _userService.deleteUser(id);
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Deleted user $id")));
-    _loadAllUsers();
+  void _refresh() {
+    _loadTodos();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Restful API Http Demo")),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              TextField(
-                controller: _idController,
-                decoration: const InputDecoration(
-                  labelText: "User Id",
-                  hintText: "Enter user id",
-                ),
-                onSubmitted: (value) async {
-                  _getUserById(value);
-                },
-              ),
-              ElevatedButton(
-                onPressed: _loadAllUsers,
-                child: const Text("Load All Users"),
-              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    onPressed: _createNewUser,
-                    child: const Text("Create"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _updateUserData,
-                    child: const Text("Update"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _patchUserData,
-                    child: const Text("Patch"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _deleteUserData,
-                    child: const Text("Delete"),
+                  IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
+                  Expanded(
+                    child: TextField(
+                      controller: _idController,
+                      decoration: const InputDecoration(
+                        labelText: "Todo Id",
+                        hintText: "Enter todo id",
+                      ),
+                      onSubmitted: (value) async {
+                        _getTodoById(value);
+                      },
+                    ),
                   ),
                 ],
               ),
               Expanded(
-                child: FutureBuilder<List<User>>(
-                  future: _futureUserData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text("Error: ${snapshot.error}"));
-                    } else if (!snapshot.hasData) {
-                      return const Center(child: Text("No data"));
-                    }
-                    final users = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        final user = users[index];
-                        return ListTile(
-                          title: Text(user.name),
-                          subtitle: Text("${user.email}\n${user.phone}"),
-                          leading: Text(user.id),
-                          onTap: () async {
-                            final detail = await _userService.getUserById(
-                              user.id,
-                            );
-                            if (!context.mounted) return;
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: Text(detail.name),
-                                content: Text(detail.toJson().toString()),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
+                child: ListView.builder(
+                  itemCount: todos.length,
+                  itemBuilder: (_, index) => ListTile(
+                    leading: IconButton(
+                      onPressed: () => _patchTodo(index),
+                      icon: Icon(
+                        todos[index].completed
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                      ),
+                    ),
+                    title: Text("${todos[index].id} - ${todos[index].todo}"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => _updateTodo(index),
+                          icon: const Icon(Icons.edit),
+                        ),
+                        IconButton(
+                          onPressed: () => _deleteTodo(index),
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createNewTodo,
+        child: const Icon(Icons.add),
       ),
     );
   }

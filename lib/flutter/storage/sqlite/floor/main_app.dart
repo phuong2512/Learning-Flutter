@@ -50,7 +50,7 @@ class _TodoScreenState extends State<TodoScreen> {
   }
 
   Future<void> _addTodo() async {
-    final newTodo = Todo(title: 'New Task');
+    final newTodo = Todo(id: null,title: 'New Task');
     await widget.todoDao.insertTodo(newTodo);
     _loadTodos();
   }

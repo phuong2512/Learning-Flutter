@@ -87,7 +87,6 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Todo.fromMap(maps[i]));
   }
 
-
   Future<void> deleteTodoByRawSQL(int id) async {
     final db = await database;
     await db.rawDelete('DELETE FROM todos WHERE id = ?', [id]);
@@ -97,9 +96,17 @@ class DatabaseHelper {
     final db = await database;
     int deletedCount = 0;
     await db.transaction((txn) async {
-      final completedTodos = await txn.query('todos', where: 'isDone = ?', whereArgs: [1]);
+      final completedTodos = await txn.query(
+        'todos',
+        where: 'isDone = ?',
+        whereArgs: [1],
+      );
       if (completedTodos.isNotEmpty) {
-        deletedCount = await txn.delete('todos', where: 'isDone = ?', whereArgs: [1]);
+        deletedCount = await txn.delete(
+          'todos',
+          where: 'isDone = ?',
+          whereArgs: [1],
+        );
       }
     });
     return deletedCount;

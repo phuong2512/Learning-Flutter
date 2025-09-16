@@ -1,56 +1,55 @@
 import 'package:dio/dio.dart';
-import 'package:learning_flutter/flutter/api/restful_api/user.dart';
+import 'package:learning_flutter/flutter/api/restful_api/todo.dart';
 
 class ApiDioService {
-  final dio = Dio(
+  final _dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.1.19:3000",
-      headers: {
-        'Content-Type': 'application/json',
-        // 'User-Agent':
-        //     'FlutterApp/1.0',
-      },
+      baseUrl: "https://dummyjson.com/todos",
+      headers: {'Content-Type': 'application/json'},
     ),
   );
 
-  Future<List<User>> getAlUsers() async {
-    final response = await dio.get('/users');
-    if (response.statusCode == 200) {
-      final List data = response.data;
-      return data.map((user) => User.fromJson(user)).toList();
-    } else {
-      throw Exception('Failed to load users');
-    }
+  Future<List<Todo>> getTodos() async {
+    final res = await _dio.get('');
+    final List data = res.data['todos'];
+    return data.map((e) => Todo.fromJson(e)).toList();
   }
 
-  Future<User> getUserById(String id) async {
-    final res = await dio.get("/users/$id");
+  Future<Todo> getTodoById(int id) async {
+    final res = await _dio.get("/todos/$id");
     if (res.statusCode == 200) {
-      return User.fromJson(res.data);
+      return Todo.fromJson(res.data);
     } else {
-      throw Exception("Failed to fetch user $id");
+      throw Exception("Failed to fetch todo $id");
     }
   }
 
-  Future<User> createUser(User user) async {
-    final res = await dio.post("/users", data: user.toJson());
-    return User.fromJson(res.data);
+  Future<Todo> createTodo(Todo todo) async {
+    final res = await _dio.post(
+      '/add',
+      data: {"todo": todo.todo, "completed": false, "userId": todo.userId},
+    );
+    return Todo.fromJson(res.data);
   }
 
-  Future<User> updateUser(String id, User user) async {
-    final res = await dio.put("/users/$id", data: user.toJson());
-    return User.fromJson(res.data);
-  }
-
-  Future<User> patchUser(String id, Map<String, dynamic> fields) async {
-    final res = await dio.patch("/users/$id", data: fields);
-    return User.fromJson(res.data);
-  }
-
-  Future<void> deleteUser(String id) async {
-    final res = await dio.delete("/users/$id");
-    if (res.statusCode != 200) {
-      throw Exception("Failed to delete user $id");
+  Future<Todo> updateTodo(Todo todo) async {
+    try {
+      final res = await _dio.put(
+        '/${todo.id}',
+        data: {"todo": todo.todo, "completed": todo.completed},
+      );
+      return Todo.fromJson(res.data);
+    } on DioException catch (e) {
+      throw Exception("Failed to update todo: ${e.response?.data}");
     }
+  }
+
+  Future<Todo> patchTodo(int id, Map<String, dynamic> fields) async {
+    final res = await _dio.patch('/$id', data: fields);
+    return Todo.fromJson(res.data);
+  }
+
+  Future<void> deleteTodo(int id) async {
+    await _dio.delete('/$id');
   }
 }

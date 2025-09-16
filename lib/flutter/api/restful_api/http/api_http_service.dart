@@ -1,71 +1,79 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:learning_flutter/flutter/api/restful_api/user.dart';
+import 'package:learning_flutter/flutter/api/restful_api/todo.dart';
 
 class ApiHttpService {
-  final String apiUrl = "http://192.168.1.19:3000/users";
-  final Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    // 'User-Agent': 'FlutterApp/1.0', //Xác định thông tin ứng dụng đang sử dụng
-  };
+  static const baseUrl = "https://dummyjson.com/todos";
+  final header = {"Content-Type": "application/json"};
 
-  Future<List<User>> getAlUsers() async {
-    final response = await http.get(Uri.parse(apiUrl), headers: headers);
-    if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
-      return data.map((user) => User.fromJson(user)).toList();
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
-
-  Future<User> getUserById(String id) async {
-    final res = await http.get(Uri.parse("$apiUrl/$id"), headers: headers);
+  // GET
+  Future<List<Todo>> getTodos() async {
+    final res = await http.get(Uri.parse(baseUrl));
     if (res.statusCode == 200) {
-      return User.fromJson(jsonDecode(res.body));
+      final List data = jsonDecode(res.body)['todos'];
+      return data.map((e) => Todo.fromJson(e)).toList();
     } else {
-      throw Exception("Failed to fetch user $id");
+      throw Exception("Failed to fetch todos");
     }
   }
 
-  Future<User> createUser(User user) async {
+
+  // POST
+  Future<Todo> createTodo(Todo todo) async {
     final res = await http.post(
-      Uri.parse(apiUrl),
-      body: jsonEncode(user.toJson()),
-      headers: headers,
+      Uri.parse("$baseUrl/add"),
+      body: jsonEncode({
+        "todo": todo.todo,
+        "completed": false,
+        "userId": todo.userId,
+      }),
+      headers: header,
     );
-
-    if (res.statusCode == 201 || res.statusCode == 200) {
-      return User.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return Todo.fromJson(jsonDecode(res.body));
     } else {
-      throw Exception("Failed to create user. Response: ${res.body}");
+      throw Exception("Failed to create todo: ${res.body}");
     }
   }
 
-
-  Future<User> updateUser(String id, User user) async {
+  // PUT
+  Future<Todo> updateTodo(Todo todo) async {
     final res = await http.put(
-      Uri.parse("$apiUrl/$id"),
-      body: jsonEncode(user.toJson()),
-      headers: headers,
+      Uri.parse("$baseUrl/${todo.id}"),
+      body: jsonEncode({
+        "todo": todo.todo,
+        "completed": todo.completed,
+      }),
+      headers: header,
     );
-    return User.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 200) {
+      return Todo.fromJson(jsonDecode(res.body));
+    } else {
+      throw Exception("Failed to update todo: ${res.body}");
+    }
   }
 
-  Future<User> patchUser(String id, Map<String, dynamic> fields) async {
+  // PATCH
+  Future<Todo> patchTodo(int id, Map<String, dynamic> fields) async {
     final res = await http.patch(
-      Uri.parse("$apiUrl/$id"),
+      Uri.parse("$baseUrl/$id"),
       body: jsonEncode(fields),
-      headers: headers,
+      headers: header,
     );
-    return User.fromJson(jsonDecode(res.body));
+    return Todo.fromJson(jsonDecode(res.body));
   }
 
-  Future<void> deleteUser(String id) async {
-    final res = await http.delete(Uri.parse("$apiUrl/$id"),headers: headers);
-    if (res.statusCode != 200) {
-      throw Exception("Failed to delete user $id");
+  // DELETE
+  Future<void> deleteTodo(int id) async {
+    await http.delete(Uri.parse("$baseUrl/$id"));
+  }
+
+  Future<Todo> getTodoById(int id) async {
+    final res = await http.get(Uri.parse("$baseUrl/$id"));
+    if (res.statusCode == 200) {
+      return Todo.fromJson(jsonDecode(res.body));
+    } else {
+      throw Exception("Failed to fetch todo $id");
     }
   }
 }
